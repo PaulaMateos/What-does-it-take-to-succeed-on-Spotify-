@@ -127,8 +127,9 @@ assert new_song_for_model.columns.tolist() == model_columns, "Mismatch in column
 prediction = xgb_model.predict(new_song_for_model.values)
 
 # Display the prediction
-st.write("Predicted streams for the new song:")
-st.write(int(prediction[0]))
+st.subheader(f"Predicted streams for the song {song_name} by {artist_name}:")
+st.markdown(f"<h1 style='text-align: center; color: green;'>{int(prediction[0]):,}</h1>", unsafe_allow_html=True)
+
 
 # Load the SHAP explainer for visualization
 explainer = pickle.load(open('model/shap_explainer.pkl', 'rb'))
@@ -140,7 +141,14 @@ new_song_for_shap = new_song_for_model.values.reshape(1, -1)
 shap_values = explainer.shap_values(new_song_for_shap)
 
 # Plot the SHAP summary plot
-st.write("SHAP Summary Plot:")
+st.subheader("SHAP Summary Plot:")
+st.write("""
+    SHAP (SHapley Additive exPlanations) provides a detailed explanation of how each feature impacts the model's prediction.
+    Each point represents the contribution of a feature for a specific song, where:
+    - **Color**: Red indicates higher feature values, blue indicates lower feature values.
+    - **Position**: Features with higher absolute SHAP values have a larger impact on the prediction.
+""")
+
 shap.summary_plot(shap_values, features=new_song_for_shap, feature_names=model_columns, show=False)
 plt.tight_layout()
 st.pyplot(plt)
