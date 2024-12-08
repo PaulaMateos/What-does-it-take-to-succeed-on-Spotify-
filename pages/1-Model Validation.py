@@ -6,8 +6,74 @@ from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# Page title
-st.title("Model Validation")
+st.set_page_config(layout="centered")
+
+
+# Custom CSS for styling
+st.markdown(
+    """
+    <style>
+    /* Import Poppins font from Google Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+    /* General app background */
+    .stApp {
+        background-color: #f0f0f0; /* Light grey */
+        font-family: 'Poppins', sans-serif; /* Apply Poppins font */
+    }
+
+    /* Sidebar background */
+    [data-testid="stSidebar"] {
+        background-color: #333333; /* Dark grey */
+        color: white; /* Default text color */
+        font-family: 'Poppins', sans-serif; /* Apply Poppins font */
+    }
+
+    /* Ensure all sidebar text is white */
+    [data-testid="stSidebar"] * {
+        color: white !important; /* Force white text */
+    }
+
+    /* Top bar (header) background */
+    header[data-testid="stHeader"] {
+        background-color: #333333; /* Dark grey */
+        font-family: 'Poppins', sans-serif; /* Apply Poppins font */
+    }
+
+    /* Top bar text (titles and navigation links) */
+    header[data-testid="stHeader"] * {
+        color: white !important; /* Force white text for top bar */
+    }
+
+    /* Remove header shadow if any */
+    header[data-testid="stHeader"] {
+        box-shadow: none !important;
+    }
+
+    /* Title text in Poppins font */
+    .title {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 900; /* Make the title more bold */
+    }
+
+    /* General text font also in Poppins */
+    body, p, label, input, button, select, .css-145kmo2 {
+        font-family: 'Poppins', sans-serif;
+        text-align: justify; /* Justify text */
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# Title and Header
+st.markdown(
+    """
+    <div class="title" style="font-size: 50px; font-weight: bold; color: #1DB954;">Model Validation</div>
+    <div class="title" style="font-size: 18px; font-weight: bold; color: #333;">Quick page overview</div>
+    """,
+    unsafe_allow_html=True,
+)
 
 # Introduction text
 st.write("""
@@ -69,12 +135,12 @@ st.write(song_data[['track_name', 'artist_name', 'streams']])
 st.write("")
 st.subheader("Predicted Streams")
 st.write("This is the predicted number of streams based on the model:")
-st.markdown(f"<h1 style='text-align: center; color: green;'>{int(prediction[0]):,}</h1>", unsafe_allow_html=True)
+st.markdown(f"<h1 style='text-align: center; color: #1DB954;'>{int(prediction[0]):,}</h1>", unsafe_allow_html=True)
 
 st.subheader("Difference")
 st.write("This shows the difference between the actual and predicted streams:")
 st.markdown(
-    f"<h2 style='text-align: center; color: red;'>{abs(int(prediction[0]) - song_data['streams']):,}</h2>",
+    f"<h2 style='text-align: center; color: #f5452a;'>{abs(int(prediction[0]) - song_data['streams']):,}</h2>",
     unsafe_allow_html=True,
 )
 
@@ -96,10 +162,13 @@ features_df = features_df.sort_values(by='Importance', ascending=False)
 
 # Plot the feature importances
 plt.figure(figsize=(10, 6))
+sns.set_style("whitegrid")  # Set background to light grey for seaborn
 sns.barplot(x='Importance', y='Feature', data=features_df, palette='viridis')
+plt.gca().patch.set_facecolor('#f0f0f0')  # Inner background color
 plt.title('Feature Importances')
 plt.xlabel('Importance')
 plt.ylabel('Feature')
+plt.gcf().patch.set_facecolor('#f0f0f0')  # Set the figure background color
 st.pyplot(plt)
 
 # Load the SHAP explainer
@@ -121,5 +190,7 @@ shap_values = explainer.shap_values(song_data_for_shap)
 
 # Plot the SHAP summary plot
 shap.summary_plot(shap_values, features=song_data_for_shap, feature_names=model_columns, show=False)
+plt.gca().patch.set_facecolor('#f0f0f0')  # Inner background color
+plt.gcf().patch.set_facecolor('#f0f0f0')  # Set the figure background color
 plt.tight_layout()
 st.pyplot(plt)

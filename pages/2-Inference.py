@@ -5,8 +5,79 @@ import shap
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 
-# Page title
-st.title("Song Inference with New Songs")
+# Custom CSS for styling
+st.markdown(
+    """
+    <style>
+    /* Import Poppins font from Google Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+    /* General app background */
+    .stApp {
+        background-color: #f0f0f0; /* Light grey */
+        font-family: 'Poppins', sans-serif; /* Apply Poppins font */
+        padding-left: 10%;  /* Add left margin */
+        padding-right: 10%; /* Add right margin */
+    }
+
+    /* Sidebar background */
+    [data-testid="stSidebar"] {
+        background-color: #333333; /* Dark grey */
+        color: white; /* Default text color */
+        font-family: 'Poppins', sans-serif; /* Apply Poppins font */
+    }
+
+    /* Ensure all sidebar text is white */
+    [data-testid="stSidebar"] * {
+        color: white !important; /* Force white text */
+    }
+
+    /* Top bar (header) background */
+    header[data-testid="stHeader"] {
+        background-color: #333333; /* Dark grey */
+        font-family: 'Poppins', sans-serif; /* Apply Poppins font */
+    }
+
+    /* Top bar text (titles and navigation links) */
+    header[data-testid="stHeader"] * {
+        color: white !important; /* Force white text for top bar */
+    }
+
+    /* Remove header shadow if any */
+    header[data-testid="stHeader"] {
+        box-shadow: none !important;
+    }
+
+    /* Title text in Poppins font */
+    .title {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 900; /* Make the title more bold */
+    }
+
+    /* General text font also in Poppins */
+    body, p, label, input, button, select, .css-145kmo2 {
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    /* Widen the content area (main body) */
+    .main {
+        margin-left: 5% !important;
+        margin-right: 5% !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# Title and Header
+st.markdown(
+    """
+    <div class="title" style="font-size: 50px; font-weight: bold; color: #1DB954;">Song Inference with New Songs</div>
+    <div class="title" style="font-size: 18px; font-weight: bold; color: #333;">Quick page overview</div>
+    """,
+    unsafe_allow_html=True,
+)
 
 # Introduction text
 st.write("""
@@ -128,7 +199,7 @@ prediction = xgb_model.predict(new_song_for_model.values)
 
 # Display the prediction
 st.subheader(f"Predicted streams for the song {song_name} by {artist_name}:")
-st.markdown(f"<h1 style='text-align: center; color: green;'>{int(prediction[0]):,}</h1>", unsafe_allow_html=True)
+st.markdown(f"<h1 style='text-align: center; color: #1DB954;'>{int(prediction[0]):,}</h1>", unsafe_allow_html=True)
 
 
 # Load the SHAP explainer for visualization
@@ -150,5 +221,7 @@ st.write("""
 """)
 
 shap.summary_plot(shap_values, features=new_song_for_shap, feature_names=model_columns, show=False)
+plt.gca().patch.set_facecolor('#f0f0f0')  # Inner background color
+plt.gcf().patch.set_facecolor('#f0f0f0')  # Set the figure background color
 plt.tight_layout()
 st.pyplot(plt)
