@@ -5,6 +5,9 @@ import shap
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 
+st.set_page_config(layout="centered")
+
+
 # Custom CSS for styling
 st.markdown(
     """
@@ -14,15 +17,13 @@ st.markdown(
 
     /* General app background */
     .stApp {
-        background-color: #f0f0f0; /* Light grey */
+        background-color: #333333; /* Light grey */
         font-family: 'Poppins', sans-serif; /* Apply Poppins font */
-        padding-left: 10%;  /* Add left margin */
-        padding-right: 10%; /* Add right margin */
     }
 
     /* Sidebar background */
     [data-testid="stSidebar"] {
-        background-color: #333333; /* Dark grey */
+        background-color: #1c1c1c; /* Dark grey */
         color: white; /* Default text color */
         font-family: 'Poppins', sans-serif; /* Apply Poppins font */
     }
@@ -34,7 +35,7 @@ st.markdown(
 
     /* Top bar (header) background */
     header[data-testid="stHeader"] {
-        background-color: #333333; /* Dark grey */
+        background-color: #1c1c1c; /* Dark grey */
         font-family: 'Poppins', sans-serif; /* Apply Poppins font */
     }
 
@@ -52,17 +53,14 @@ st.markdown(
     .title {
         font-family: 'Poppins', sans-serif;
         font-weight: 900; /* Make the title more bold */
+        color: #1DB954; /* Title color */
+        text-align: left; /* Center the title */
     }
-
     /* General text font also in Poppins */
     body, p, label, input, button, select, .css-145kmo2 {
         font-family: 'Poppins', sans-serif;
-    }
-    
-    /* Widen the content area (main body) */
-    .main {
-        margin-left: 5% !important;
-        margin-right: 5% !important;
+        text-align: justify; /* Justify text */
+        color: white; /* Default text color */
     }
     </style>
     """,
@@ -74,7 +72,7 @@ st.markdown(
 st.markdown(
     """
     <div class="title" style="font-size: 50px; font-weight: bold; color: #1DB954;">Song Inference with New Songs</div>
-    <div class="title" style="font-size: 18px; font-weight: bold; color: #333;">Quick page overview</div>
+    <div class="title" style="font-size: 18px; font-weight: bold; color: #1DB954;">Quick page overview</div>
     """,
     unsafe_allow_html=True,
 )
@@ -198,7 +196,13 @@ assert new_song_for_model.columns.tolist() == model_columns, "Mismatch in column
 prediction = xgb_model.predict(new_song_for_model.values)
 
 # Display the prediction
-st.subheader(f"Predicted streams for the song {song_name} by {artist_name}:")
+st.markdown(
+    """
+    <div class="title" style="font-size: 18px; font-weight: bold; color: #1DB954;">Predicted Streams</div>
+    """,
+    unsafe_allow_html=True,
+)
+st.write(f"for the song {song_name} by {artist_name}:")
 st.markdown(f"<h1 style='text-align: center; color: #1DB954;'>{int(prediction[0]):,}</h1>", unsafe_allow_html=True)
 
 
@@ -212,16 +216,25 @@ new_song_for_shap = new_song_for_model.values.reshape(1, -1)
 shap_values = explainer.shap_values(new_song_for_shap)
 
 # Plot the SHAP summary plot
-st.subheader("SHAP Summary Plot:")
+st.markdown(
+    """
+    <div class="title" style="font-size: 18px; font-weight: bold; color: #1DB954;">SHAP Summary Plot</div>
+    """,
+    unsafe_allow_html=True,
+)
 st.write("""
     SHAP (SHapley Additive exPlanations) provides a detailed explanation of how each feature impacts the model's prediction.
     Each point represents the contribution of a feature for a specific song, where:
-    - **Color**: Red indicates higher feature values, blue indicates lower feature values.
-    - **Position**: Features with higher absolute SHAP values have a larger impact on the prediction.
+    \n - **Color**: Red indicates higher feature values, blue indicates lower feature values.
+    \n - **Position**: Features with higher absolute SHAP values have a larger impact on the prediction.
 """)
 
 shap.summary_plot(shap_values, features=new_song_for_shap, feature_names=model_columns, show=False)
-plt.gca().patch.set_facecolor('#f0f0f0')  # Inner background color
-plt.gcf().patch.set_facecolor('#f0f0f0')  # Set the figure background color
+plt.gca().patch.set_facecolor('#333333')  # Inner background color
+plt.gcf().patch.set_facecolor('#333333')  # Set the figure background color
+plt.xticks(color='white')
+plt.yticks(color='white')
+plt.xlabel('SHAP Value', color='white')
+plt.ylabel('Feature Value', color='white')
 plt.tight_layout()
 st.pyplot(plt)

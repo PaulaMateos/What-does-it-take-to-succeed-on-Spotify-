@@ -7,6 +7,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.preprocessing import StandardScaler
 
+st.set_page_config(layout="centered")
+
+
 # Custom CSS for styling
 st.markdown(
     """
@@ -16,13 +19,13 @@ st.markdown(
 
     /* General app background */
     .stApp {
-        background-color: #f0f0f0; /* Light grey */
+        background-color: #333333; /* Light grey */
         font-family: 'Poppins', sans-serif; /* Apply Poppins font */
     }
 
     /* Sidebar background */
     [data-testid="stSidebar"] {
-        background-color: #333333; /* Dark grey */
+        background-color: #1c1c1c; /* Dark grey */
         color: white; /* Default text color */
         font-family: 'Poppins', sans-serif; /* Apply Poppins font */
     }
@@ -34,7 +37,7 @@ st.markdown(
 
     /* Top bar (header) background */
     header[data-testid="stHeader"] {
-        background-color: #333333; /* Dark grey */
+        background-color: #1c1c1c; /* Dark grey */
         font-family: 'Poppins', sans-serif; /* Apply Poppins font */
     }
 
@@ -52,11 +55,14 @@ st.markdown(
     .title {
         font-family: 'Poppins', sans-serif;
         font-weight: 900; /* Make the title more bold */
+        color: #1DB954; /* Title color */
+        text-align: left; /* Center the title */
     }
-
     /* General text font also in Poppins */
     body, p, label, input, button, select, .css-145kmo2 {
         font-family: 'Poppins', sans-serif;
+        text-align: justify; /* Justify text */
+        color: white; /* Default text color */
     }
     </style>
     """,
@@ -67,7 +73,7 @@ st.markdown(
 st.markdown(
     """
     <div class="title" style="font-size: 50px; font-weight: bold; color: #1DB954;">Global Explainability</div>
-    <div class="title" style="font-size: 18px; font-weight: bold; color: #333;">Quick page overview</div>
+    <div class="title" style="font-size: 18px; font-weight: bold; color: #1DB954;">Quick page overview</div>
     """,
     unsafe_allow_html=True,
 )
@@ -131,11 +137,23 @@ for index, song_data in df_with_names.iterrows():
 results_df = pd.DataFrame(results)
 
 # Display prediction comparison for all songs
-st.write("Prediction Comparison for All Songs:")
+st.markdown(
+    """
+    <div class="title" style="font-size: 18px; font-weight: bold; color: #1DB954;">Prediction Comparison for All Songs</div>
+    """,
+    unsafe_allow_html=True,
+)
+st.write("Here is a comparison of the model's predictions with the actual number of streams for all songs. The 'Difference' column represents the absolute difference between the predicted and real values.")
 st.write(results_df)
 
 # Plot the feature importances with barplot
-st.write("Feature Importances Across All Songs:")
+st.markdown(
+    """
+    <div class="title" style="font-size: 18px; font-weight: bold; color: #1DB954;">Feature Importances Across All Songs</div>
+    """,
+    unsafe_allow_html=True,
+)
+st.write("The following plot shows the feature importances for the XGBoost model. These values indicate the importance of each feature in making predictions.")
 # Get the feature importances from the XGBoost model
 feature_importances = xgb_model.feature_importances_
 
@@ -148,9 +166,13 @@ features_df = features_df.sort_values(by='Importance', ascending=False)
 # Plot the feature importances
 plt.figure(figsize=(10, 6))
 sns.barplot(x='Importance', y='Feature', data=features_df, palette='viridis')
-plt.gca().patch.set_facecolor('#f0f0f0')  # Inner background color
-plt.gcf().patch.set_facecolor('#f0f0f0')  # Set the figure background color
-plt.title('Feature Importances for Song Predictions')
+plt.gca().patch.set_facecolor('#333333')  # Inner background color
+plt.gcf().patch.set_facecolor('#333333')  # Set the figure background color
+plt.title('Feature Importances for Song Predictions', color='white')
+plt.xticks(color='white')
+plt.yticks(color='white')
+plt.xlabel('Importance', color='white')
+plt.ylabel('Feature', color='white')
 plt.xlabel('Importance')
 plt.ylabel('Feature')
 st.pyplot(plt)
@@ -182,9 +204,20 @@ all_song_data_for_model = np.vstack(all_song_data_for_model)
 shap_values = explainer.shap_values(all_song_data_for_model)
 
 # Plot the SHAP summary plot
-st.write("SHAP Summary Plot Across All Songs:")
+st.markdown(
+    """
+    <div class="title" style="font-size: 18px; font-weight: bold; color: #1DB954;">SHAP Summary Plot Across All Songs</div>
+    """,
+    unsafe_allow_html=True,
+)
+st.write("The following plot shows the SHAP values for each feature across all songs. It provides insights into how each feature impacts the model's predictions. Red indicates higher feature values, while blue indicates lower feature values.")
 shap.summary_plot(shap_values, features=all_song_data_for_model, feature_names=model_columns, show=False)
-plt.gca().patch.set_facecolor('#f0f0f0')  # Inner background color
-plt.gcf().patch.set_facecolor('#f0f0f0')  # Set the figure background color
+plt.title('SHAP Summary Plot for Song Predictions', color='white')
+plt.gca().patch.set_facecolor('#333333')  # Inner background color
+plt.gcf().patch.set_facecolor('#333333')  # Set the figure background color
+plt.xticks(color='white')
+plt.yticks(color='white')
+plt.xlabel('SHAP Value', color='white')
+plt.ylabel('Feature Value', color='white')
 plt.tight_layout()
 st.pyplot(plt)

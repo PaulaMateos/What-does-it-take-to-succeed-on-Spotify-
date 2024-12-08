@@ -18,13 +18,13 @@ st.markdown(
 
     /* General app background */
     .stApp {
-        background-color: #f0f0f0; /* Light grey */
+        background-color: #333333; /* Light grey */
         font-family: 'Poppins', sans-serif; /* Apply Poppins font */
     }
 
     /* Sidebar background */
     [data-testid="stSidebar"] {
-        background-color: #333333; /* Dark grey */
+        background-color: #1c1c1c; /* Dark grey */
         color: white; /* Default text color */
         font-family: 'Poppins', sans-serif; /* Apply Poppins font */
     }
@@ -36,7 +36,7 @@ st.markdown(
 
     /* Top bar (header) background */
     header[data-testid="stHeader"] {
-        background-color: #333333; /* Dark grey */
+        background-color: #1c1c1c; /* Dark grey */
         font-family: 'Poppins', sans-serif; /* Apply Poppins font */
     }
 
@@ -54,12 +54,14 @@ st.markdown(
     .title {
         font-family: 'Poppins', sans-serif;
         font-weight: 900; /* Make the title more bold */
+        color: #1DB954; /* Title color */
+        text-align: left; /* Center the title */
     }
-
     /* General text font also in Poppins */
     body, p, label, input, button, select, .css-145kmo2 {
         font-family: 'Poppins', sans-serif;
         text-align: justify; /* Justify text */
+        color: white; /* Default text color */
     }
     </style>
     """,
@@ -70,7 +72,7 @@ st.markdown(
 st.markdown(
     """
     <div class="title" style="font-size: 50px; font-weight: bold; color: #1DB954;">Model Validation</div>
-    <div class="title" style="font-size: 18px; font-weight: bold; color: #333;">Quick page overview</div>
+    <div class="title" style="font-size: 18px; font-weight: bold; color: #1DB954;">Quick page overview</div>
     """,
     unsafe_allow_html=True,
 )
@@ -88,13 +90,23 @@ with open('model/xgboost_model.pkl', 'rb') as file:
 # Load the dataset with track names
 df_with_names = pd.read_csv('data/spotify_with_track_name.csv')
 
-# Display the first few rows of the dataset
-st.subheader("Sample Data")
+st.markdown(
+    """
+    <div class="title" style="font-size: 18px; font-weight: bold; color: #1DB954;">Sample Data</div>
+    """,
+    unsafe_allow_html=True,
+)
 st.write("Here is a preview of the data used for model inference and validation:")
 st.write(df_with_names.head())
 
 # Select a song from the dataset (Display song names)
-st.subheader("Select a Song")
+st.markdown(
+    """
+    <div class="title" style="font-size: 18px; font-weight: bold; color: #1DB954;">Select a Song</div>
+    """,
+    unsafe_allow_html=True,
+)
+
 st.write("Choose a song to analyze. The model will predict its streams and compare it to the actual value.")
 song_name = st.selectbox("Select a song:", df_with_names['track_name'].unique())
 
@@ -129,15 +141,30 @@ song_data_for_model = song_data_scaled_df[model_columns]
 prediction = xgb_model.predict(song_data_for_model.values)
 
 # Display the real values for the number of streams and the predicted value
-st.subheader("Prediction Comparison")
+st.markdown(
+    """
+    <div class="title" style="font-size: 18px; font-weight: bold; color: #1DB954;">Prediction Comparison</div>
+    """,
+    unsafe_allow_html=True,
+)
 st.write("The following table displays the selected song's details, including its actual streams:")
 st.write(song_data[['track_name', 'artist_name', 'streams']])
 st.write("")
-st.subheader("Predicted Streams")
+st.markdown(
+    """
+    <div class="title" style="font-size: 18px; font-weight: bold; color: #1DB954;">Predicted Streams</div>
+    """,
+    unsafe_allow_html=True,
+)
 st.write("This is the predicted number of streams based on the model:")
 st.markdown(f"<h1 style='text-align: center; color: #1DB954;'>{int(prediction[0]):,}</h1>", unsafe_allow_html=True)
 
-st.subheader("Difference")
+st.markdown(
+    """
+    <div class="title" style="font-size: 18px; font-weight: bold; color: #1DB954;">Difference</div>
+    """,
+    unsafe_allow_html=True,
+)
 st.write("This shows the difference between the actual and predicted streams:")
 st.markdown(
     f"<h2 style='text-align: center; color: #f5452a;'>{abs(int(prediction[0]) - song_data['streams']):,}</h2>",
@@ -145,7 +172,12 @@ st.markdown(
 )
 
 # Plot the feature importances with a bar plot
-st.subheader("Feature Importances")
+st.markdown(
+    """
+    <div class="title" style="font-size: 18px; font-weight: bold; color: #1DB954;">Feature Importances</div>
+    """,
+    unsafe_allow_html=True,
+)
 st.write("""
     Feature importance shows how much each feature contributes to the model's prediction. 
     Higher importance means the feature has a larger impact on the model's decisions.
@@ -164,20 +196,27 @@ features_df = features_df.sort_values(by='Importance', ascending=False)
 plt.figure(figsize=(10, 6))
 sns.set_style("whitegrid")  # Set background to light grey for seaborn
 sns.barplot(x='Importance', y='Feature', data=features_df, palette='viridis')
-plt.gca().patch.set_facecolor('#f0f0f0')  # Inner background color
-plt.title('Feature Importances')
-plt.xlabel('Importance')
-plt.ylabel('Feature')
-plt.gcf().patch.set_facecolor('#f0f0f0')  # Set the figure background color
+plt.gca().patch.set_facecolor('#333333')  # Inner background color
+plt.title('Feature Importances', color='white')
+plt.xlabel('Importance', color='white')
+plt.ylabel('Feature', color='white')
+plt.xticks(color='white')
+plt.yticks(color='white')
+plt.gcf().patch.set_facecolor('#333333')  # Set the figure background color
 st.pyplot(plt)
 
 # Load the SHAP explainer
-st.subheader("SHAP Summary Plot")
+st.markdown(
+    """
+    <div class="title" style="font-size: 18px; font-weight: bold; color: #1DB954;">SHAP Summary Plot</div>
+    """,
+    unsafe_allow_html=True,
+)
 st.write("""
     SHAP (SHapley Additive exPlanations) provides a detailed explanation of how each feature impacts the model's prediction.
     Each point represents the contribution of a feature for a specific song, where:
-    - **Color**: Red indicates higher feature values, blue indicates lower feature values.
-    - **Position**: Features with higher absolute SHAP values have a larger impact on the prediction.
+    \n- **Color**: Red indicates higher feature values, blue indicates lower feature values.
+    \n- **Position**: Features with higher absolute SHAP values have a larger impact on the prediction.
 """)
 
 explainer = pickle.load(open('model/shap_explainer.pkl', 'rb'))
@@ -190,7 +229,11 @@ shap_values = explainer.shap_values(song_data_for_shap)
 
 # Plot the SHAP summary plot
 shap.summary_plot(shap_values, features=song_data_for_shap, feature_names=model_columns, show=False)
-plt.gca().patch.set_facecolor('#f0f0f0')  # Inner background color
-plt.gcf().patch.set_facecolor('#f0f0f0')  # Set the figure background color
+plt.gca().patch.set_facecolor('#333333')  # Inner background color
+plt.gcf().patch.set_facecolor('#333333')  # Set the figure background color
+# labels to white
+plt.xticks(color='white')
+plt.yticks(color='white')
+# legend to white
 plt.tight_layout()
 st.pyplot(plt)
